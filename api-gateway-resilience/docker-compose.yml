@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7
+    container_name: redis-rate-limit
+    ports:
+      - "6379:6379"
+
+  api-gateway:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./api-gateway:/app
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+
+  slow-service:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./slow-service:/app
+    command: npm run dev
+    ports:
+      - "4000:4000"
